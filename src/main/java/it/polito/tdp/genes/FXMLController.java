@@ -5,8 +5,10 @@
 package it.polito.tdp.genes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.genes.model.Adiacente;
 import it.polito.tdp.genes.model.Genes;
 import it.polito.tdp.genes.model.Model;
 import javafx.event.ActionEvent;
@@ -30,7 +32,7 @@ public class FXMLController {
     private Button btnCreaGrafo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbGeni"
-    private ComboBox<?> cmbGeni; // Value injected by FXMLLoader
+    private ComboBox<Genes> cmbGeni; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnGeniAdiacenti"
     private Button btnGeniAdiacenti; // Value injected by FXMLLoader
@@ -47,18 +49,33 @@ public class FXMLController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	model.creaGrafo();
+    	txtResult.setText("Grafo creato!"+"\n"+"Vertici: "+model.nVert()+" Archi: "+model.nArchi());
+    	
+    	List<Genes> geni=model.geni();
+    	cmbGeni.getItems().addAll(geni);
 
     }
 
     @FXML
     void doGeniAdiacenti(ActionEvent event) {
 
+    	if(cmbGeni.getValue()==null) {
+    		txtResult.setText("Selezionare Gene");
+    	}
+    	else {
+    		txtResult.setText("ADIACENTI: ");
+    		for(Adiacente a:model.adiacenti(cmbGeni.getValue())) {
+    			txtResult.appendText("\n"+a.getG().toString()+"   "+a.getPeso());
+    		}
+    	}
     	
     }
 
     @FXML
     void doSimula(ActionEvent event) {
 
+    	txtResult.setText(model.simula(cmbGeni.getValue(),Integer.parseInt(txtIng.getText())));
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
